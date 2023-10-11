@@ -19,4 +19,8 @@ COPY ./ .
 
 COPY --from=spiralscout/roadrunner:latest /usr/bin/rr /app
 
+RUN cp -f .env.sample .env && \
+    php app.php encrypt:key -m .env && \
+    php app.php configure --quiet
+
 CMD ./rr serve -c .rr.yaml

@@ -44,12 +44,6 @@
         }
     },
     "scripts": {
-        "post-install-cmd": [
-            "php app.php encrypt:key -m .env",
-            "php app.php configure --quiet",
-            "rr get-binary --quiet",
-            "composer dump-autoload"
-        ],
         "rr:download": "rr get-binary",
         "rr:download-protoc": "rr download-protoc-binary",
         "test": "vendor/bin/phpunit",
