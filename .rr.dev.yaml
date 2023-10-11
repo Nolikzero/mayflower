@@ -1,0 +1,51 @@
+version: '3'
+
+http:
+    address: '0.0.0.0:8080'
+    middleware:
+        - gzip
+        - static
+    static:
+        dir: public
+        forbid:
+            - .php
+            - .htaccess
+    pool:
+        debug: true
+        num_workers: 4
+        supervisor:
+            max_worker_memory: 100
+
+reload:
+    # sync interval
+    interval: 1s
+    # global patterns to sync
+    patterns: [ ".php" ]
+    # list of included for sync services
+    services:
+        http:
+            # recursive search for file patterns to add
+            recursive: true
+            # ignored folders
+            ignore: [ "vendor" ]
+            # service specific file pattens to sync
+            patterns: [ ".php", ".go", ".md" ]
+            # directories to sync. If recursive is set to true,
+            # recursive sync will be applied only to the directories in `dirs` section
+            dirs: [ "." ]
+
+server:
+    command: 'php app.php'
+    relay: pipes
+kv:
+    local:
+        driver: memory
+        config:
+            interval: 60
+    redis:
+        driver: redis
+        config:
+         addrs:
+            - redis:6379
+metrics:
+    address: '127.0.0.1:2112'

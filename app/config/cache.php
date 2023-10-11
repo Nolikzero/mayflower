@@ -14,17 +14,16 @@ return [
     /**
      * The default cache connection that gets used while using this caching library.
      */
-    'default' => env('CACHE_STORAGE', 'rr-local'),
+    'default' => env('CACHE_STORAGE', 'rr-redis'),
 
     /**
      * Aliases, if you want to use domain specific storages.
      */
     'aliases' => [
-        // 'user-data' => [
-        //     'storage' => 'rr-local',
-        //     'prefix' => 'user_'
-        // ],
-        // 'blog-data' => 'rr-local',
+        'country-data' => [
+            'storage' => 'rr-redis',
+            'prefix' => 'country_',
+        ]
     ],
 
     /**
@@ -46,6 +45,12 @@ return [
             // Alias for FileStorage type
             'type' => 'file',
             'path' => directory('runtime') . 'cache',
+        ],
+
+
+        'rr-redis' => [
+            'type' => 'roadrunner',
+            'driver' => 'redis',
         ],
     ],
 

@@ -21,19 +21,19 @@ return [
             'namespace' => 'Application\\Config',
         ],
         Declaration\ControllerDeclaration::TYPE => [
-            'namespace' => 'Endpoint\\Web',
+            'namespace' => 'Application\\Endpoint\\Controller',
         ],
         Declaration\FilterDeclaration::TYPE => [
-            'namespace' => 'Endpoint\\Web\\Filter',
+            'namespace' => 'Application\\Endpoint\\Filter',
         ],
         Declaration\MiddlewareDeclaration::TYPE => [
-            'namespace' => 'Endpoint\\Web\\Middleware',
+            'namespace' => 'Application\\Endpoint\\Middleware',
         ],
         Declaration\CommandDeclaration::TYPE => [
-            'namespace' => 'Endpoint\\Console',
+            'namespace' => 'Application\\Console',
         ],
         Declaration\JobHandlerDeclaration::TYPE => [
-            'namespace' => 'Endpoint\\Job',
+            'namespace' => 'Application\\Job',
         ],
     ],
 ];

@@ -65,19 +65,12 @@ class Kernel extends \Spiral\Framework\Kernel
             // HTTP extensions
             Framework\Http\RouterBootloader::class,
             Framework\Http\JsonPayloadsBootloader::class,
-            Framework\Http\CookiesBootloader::class,
-            Framework\Http\SessionBootloader::class,
-            Framework\Http\CsrfBootloader::class,
-            Framework\Http\PaginationBootloader::class,
 
             // Sentry and Data collectors
             SentryReporterBootloader::class,
             Framework\DebugBootloader::class,
             Framework\Debug\LogCollectorBootloader::class,
             Framework\Debug\HttpCollectorBootloader::class,
-
-            // Views
-            ViewsBootloader::class,
 
             // Cache
             CacheBootloader::class,
