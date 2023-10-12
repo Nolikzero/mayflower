@@ -3,9 +3,15 @@
 declare(strict_types=1);
 
 namespace App\Application\Service\Redis;
+
+use App\Application\Concerns\WithHashTable;
 use App\Application\Config\RedisConfig;
 use Predis\Client;
+use Spiral\Core\Attribute\Finalize;
+use Spiral\Core\Attribute\Singleton;
 
+#[Singleton]
+#[Finalize(method: 'disconnect')]
 final class RedisService implements RedisInterface
 {
 
@@ -39,9 +45,9 @@ final class RedisService implements RedisInterface
      * @param string $key
      * @return void
      */
-    public function increment(string $key): void
+    public function increment(string $key): int
     {
-        $this->redis->incr($key);
+        return $this->redis->incr($key);
     }
 
     /**
@@ -53,5 +59,34 @@ final class RedisService implements RedisInterface
     public function getByPattern(string $pattern): array
     {
         return $this->redis->keys($pattern);
+    }
+
+    /**
+     * Increment hash table field
+     * 
+     * @param WithHashTable $hashTable
+     * @param string $field
+     * @param int $value
+     * @return int
+     */
+    public function hashIncrement(WithHashTable $hashTable, string $field, int $value): int
+    {
+        return $this->redis->hincrby($hashTable->getHashTableKey()->getKey(), $field, $value);
+    }
+
+    /**
+     * Get hash table values
+     * 
+     * @param WithHashTable $hashTable
+     * @return array
+     */
+    public function hashGetAll(WithHashTable $hashTable): array
+    {
+        return $this->redis->hgetall($hashTable->getHashTableKey()->getKey());
+    }
+
+    public function disconnect()
+    {
+        $this->redis->disconnect();
     }
 }

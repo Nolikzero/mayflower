@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Controller;
 
+use App\Application\Concerns\WithHashTable;
 use App\Application\Service\Redis\RedisInterface;
 use Tests\TestCase;
 
@@ -21,10 +22,14 @@ final class CountryStatisticControllerTest extends TestCase
 
     public function testIncrementCountryStatisticOk()
     {
-        $this->redisService->shouldReceive('increment')
+        $this->redisService->shouldReceive('hashIncrement')
             ->once()
-            ->andReturn(1)
-            ->with('country_statistic_ES');
+            ->withArgs(fn(WithHashTable $hashTable, string $field, int $value) =>
+                $hashTable->getHashTableKey()->getKey() === 'country_statistic'
+                    && $field === 'ES'
+                    && $value === 1
+            )
+            ->andReturn(1);
 
         $http = $this->fakeHttp();
 
@@ -37,21 +42,7 @@ final class CountryStatisticControllerTest extends TestCase
 
     public function testIncrementCountryStatisticValidationException()
     {
-        $this->redisService->shouldReceive('increment')
-            ->never();
-
-        $http = $this->fakeHttp();
-
-        $response = $http->post('/api/country-statistic', [
-            'countryCode' => null
-        ]);
-
-        $this->assertEquals(422, $response->getStatusCode());
-    }
-
-    public function testIncrementCountryStatisticEmptyCountryCodeValidationException()
-    {
-        $this->redisService->shouldReceive('increment')
+        $this->redisService->shouldReceive('hashIncrement')
             ->never();
 
         $http = $this->fakeHttp();
@@ -66,7 +57,7 @@ final class CountryStatisticControllerTest extends TestCase
 
     public function testIncrementCountryStatisticMissBodyValidationException()
     {
-        $this->redisService->shouldReceive('increment')
+        $this->redisService->shouldReceive('hashIncrement')
             ->never();
 
         $http = $this->fakeHttp();
@@ -78,17 +69,14 @@ final class CountryStatisticControllerTest extends TestCase
 
     public function testGetAllCountryStatisticOk()
     {
-        $this->redisService->shouldReceive('getByPattern')
+        $this->redisService->shouldReceive('hashGetAll')
             ->once()
+            ->withAnyArgs()
             ->andReturn([
-                'country_statistic_ES',
-                'country_statistic_FR',
-                'country_statistic_IT',
+                'ES' => 1,
+                'FR' => 2,
+                'IT' => 3,
             ]);
-
-        $this->redisService->shouldReceive('get')
-            ->times(3)
-            ->andReturn(1, 2, 3);
 
         $http = $this->fakeHttp();
 
@@ -97,15 +85,9 @@ final class CountryStatisticControllerTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals([
             'data' => [
-                [
-                    'ES' => 1
-                ],
-                [
-                    'FR' => 2
-                ],
-                [
-                    'IT' => 3
-                ]
+                'ES' => 1,
+                'FR' => 2,
+                'IT' => 3,
             ]
         ], $response->getJsonParsedBody());
     }

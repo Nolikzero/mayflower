@@ -14,11 +14,9 @@ class CountryStatisticController
 {
     use PrototypeTrait;
 
-    private CountryStatisticInterface $countryStatistic;
-
-    public function __construct(CountryStatisticInterface $countryStatistic)
-    {
-        $this->countryStatistic = $countryStatistic;
+    public function __construct(
+        private readonly CountryStatisticInterface $countryStatistic
+    ) {
     }
 
     #[Route(route: '/country-statistic', group: 'api', methods: ['POST'])]

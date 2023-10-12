@@ -10,9 +10,11 @@ http:
             - .php
             - .htaccess
     pool:
-        num_workers: 4
+        num_workers: 16
         supervisor:
             max_worker_memory: 100
+        allocate_timeout: 10m
+        max_jobs: 100
 server:
     command: 'php app.php'
     relay: pipes
