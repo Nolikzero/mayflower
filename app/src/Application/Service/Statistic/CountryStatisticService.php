@@ -34,7 +34,9 @@ final class CountryStatisticService implements CountryStatisticInterface, WithHa
      */
     public function getAll(): array
     {
-        return $this->redis->hashGetAll($this);
+        $result = $this->redis->hashGetAll($this);
+        array_walk($result, fn(&$value) => $value = (int) $value);
+        return $result;
     }
 
     public function getHashTableKey(): HashTableCacheKey
